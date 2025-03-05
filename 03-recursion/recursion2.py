@@ -17,8 +17,12 @@ def count_pairs(s : str) -> int:
     count_pairs('axax') → 2
     count_pairs('axbx') → 1
     """
-
-    return 1
+    if len(s) < 3:
+        return 0
+    
+    if s[0] == s[2]:
+        return 1 + count_pairs(s[1:])
+    return count_pairs(s[1:])
 
 def count_abc(s : str) -> int:
 
@@ -29,8 +33,13 @@ def count_abc(s : str) -> int:
     count_abc('abcxxabc') → 2
     count_abc('abaxxaba') → 2
     """
+    if len(s) < 3:
+        return 0
+    
+    if s[0:3] == 'abc' or s[0:3] == 'aba':
+        return 1 + count_abc(s[1:])
 
-    return 1
+    return count_abc(s[1:])
 
 def count_11(s : str) -> int:
 
@@ -41,8 +50,13 @@ def count_11(s : str) -> int:
     count_11('abc11x11x11') → 3
     count_11('111') → 1
     """
+    if len(s) < 2:
+        return 0
+    
+    if s[0:2] == '11':
+        return 1 + count_11(s[2:])
 
-    return 1
+    return count_11(s[1:])
 
 def string_clean(s : str) -> str:
 
@@ -54,8 +68,13 @@ def string_clean(s : str) -> str:
     string_clean('abbbcdd') → 'abcd'
     string_clean('Hello') → 'Helo'
     """
-
-    return ''
+    if len(s) < 2:
+        return s
+    
+    if s[0] == s[1]:
+        return string_clean(s[1:])
+    
+    return s[0] + string_clean(s[1:])
 
 def count_hi2(s : str) -> int:
 
@@ -68,8 +87,16 @@ def count_hi2(s : str) -> int:
     count_hi2('xhixhi') → 0
 
     """
+    if len(s) < 2:
+        return 0
 
-    return ''
+    if s[:3] == "xhi":
+        return count_hi2(s[3:])
+    
+    if s[:2] == "hi":
+        return 1 + count_hi2(s[2:])
+
+    return count_hi2(s[1:])
 
 def paren_bit(s : str) -> str:
 
@@ -82,7 +109,14 @@ def paren_bit(s : str) -> str:
     paren_bit('(xy)1') → '(xy)'
     """
 
-    return ''
+
+    if s[-1] == ")":
+
+        if s[0] == "(":
+            return s
+        return paren_bit(s[1:])
+    
+    return paren_bit(s[:-1])
 
 def nest_paren(s : str) -> bool:
 
@@ -94,6 +128,11 @@ def nest_paren(s : str) -> bool:
     nest_paren('((()))') → True
     nest_paren('(((x))') → False
     """
+    if s == "":
+        return True
+
+    if s[0] == '(' and s[-1] == ')':
+        return nest_paren(s[1:-1])
 
     return False
 
@@ -107,8 +146,13 @@ def str_count(s : str, sub : str) -> int:
     str_count('catcowcat', 'cow') → 1
     str_count('catcowcat', 'dog') → 0
     """
+    if len(s) < len(sub):
+        return 0
 
-    return 1
+    if sub == s[:len(sub)]:
+        return 1 + str_count(s[len(sub):],sub)
+    
+    return str_count(s[1:], sub)
 
 def str_copies(s : str, sub : str, n : int) -> bool:
     """Given a string and a non-empty substring `sub`, compute recursively
@@ -119,8 +163,17 @@ def str_copies(s : str, sub : str, n : int) -> bool:
     str_copies('catcowcat', 'cow', 2) → False
     str_copies('catcowcat', 'cow', 1) → True
     """
+    if n <= 0:
+        return True
 
-    return False
+    if len(s) < len(sub):
+        return False
+
+    if sub == s[:len(sub)]:
+        return str_copies(s[1:], sub, n-1)
+            
+    return str_copies(s[1:], sub, n)
+
 
 def str_dist(s : str, sub : str) -> int:
     """Given a string and a non-empty substring `sub`, compute recursively
@@ -131,5 +184,14 @@ def str_dist(s : str, sub : str) -> int:
     str_dist('catcowcat', 'cow') → 3
     str_dist('cccatcowcatxx', 'cat') → 9
     """
+    if len(s) < len(sub):
+        return 0
 
-    return 0
+    if sub == s[-len(sub):]:
+
+        if sub == s[:len(sub)]:
+            return len(s)
+        
+        return str_dist(s[1:], sub)
+
+    return str_dist(s[:-1], sub)
